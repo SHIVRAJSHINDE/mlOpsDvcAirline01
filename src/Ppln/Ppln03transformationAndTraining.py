@@ -35,7 +35,7 @@ class splittingTransformationAndTrainingInitiatorClass():
                 obj = transformationOfData
             )
 
-            models, parameters = self.modelTrainingObj.modelsToTrainAndParameters()
+            models, parameters = self.modelTrainingObj.parametersAndModelsForTraining()
 
             model_report: dict = self.modelTrainingObj.evaluate_Regression_models(
                 X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test,models=models, param=parameters)
