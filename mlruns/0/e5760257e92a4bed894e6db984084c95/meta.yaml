@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/0/e5760257e92a4bed894e6db984084c95/artifacts
+end_time: 1707915005685
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: e5760257e92a4bed894e6db984084c95
+run_name: gregarious-stork-371
+run_uuid: e5760257e92a4bed894e6db984084c95
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1707914977959
+status: 3
+tags: []
+user_id: shind

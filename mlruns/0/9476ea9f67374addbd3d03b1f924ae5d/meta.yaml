@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/0/9476ea9f67374addbd3d03b1f924ae5d/artifacts
+end_time: 1707915780399
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 9476ea9f67374addbd3d03b1f924ae5d
+run_name: auspicious-swan-537
+run_uuid: 9476ea9f67374addbd3d03b1f924ae5d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1707915770371
+status: 3
+tags: []
+user_id: shind

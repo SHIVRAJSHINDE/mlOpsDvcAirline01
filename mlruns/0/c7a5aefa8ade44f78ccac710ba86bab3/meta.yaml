@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/0/c7a5aefa8ade44f78ccac710ba86bab3/artifacts
+end_time: 1707922358024
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: c7a5aefa8ade44f78ccac710ba86bab3
+run_name: hilarious-swan-156
+run_uuid: c7a5aefa8ade44f78ccac710ba86bab3
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1707922326418
+status: 3
+tags: []
+user_id: shind

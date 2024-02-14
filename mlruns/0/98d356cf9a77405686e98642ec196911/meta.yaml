@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/0/98d356cf9a77405686e98642ec196911/artifacts
+end_time: 1707910049770
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 98d356cf9a77405686e98642ec196911
+run_name: peaceful-duck-552
+run_uuid: 98d356cf9a77405686e98642ec196911
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1707910040709
+status: 3
+tags: []
+user_id: shind

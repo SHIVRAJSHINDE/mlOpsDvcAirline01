@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/0/d00792b1c69e46b78b894d7c00ab0f70/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: d00792b1c69e46b78b894d7c00ab0f70
+run_name: aged-shrew-545
+run_uuid: d00792b1c69e46b78b894d7c00ab0f70
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1707926653631
+status: 1
+tags: []
+user_id: shind

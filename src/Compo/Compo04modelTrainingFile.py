@@ -7,20 +7,12 @@ from sklearn.metrics import r2_score
 from sklearn.model_selection import GridSearchCV,RandomizedSearchCV
 from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.tree import DecisionTreeRegressor
+
+
 import warnings
 import pandas as pd
 #import dill
 import pickle
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import ElasticNet
-from urllib.parse import urlparse
-import mlflow
-import mlflow.sklearn
-import logging
-
-logging.basicConfig(level=logging.WARN)
-logger = logging.getLogger(__name__)
-
 
 
 
@@ -32,6 +24,8 @@ from sklearn.ensemble import (
     RandomForestRegressor,
 )
 from sklearn.svm import SVR
+
+
 
 from src.ExceptionLoggerAndUtils.exception import CustomException
 from src.ExceptionLoggerAndUtils.utils import save_object, evaluate_Regression_models
@@ -60,15 +54,15 @@ class modelTrainingClass:
                         'max_depth': [None, 10, 20, 30],   # Maximum depth of each tree
                         'min_samples_split': [2, 5, 10],  # Minimum samples required to split a node
                         'min_samples_leaf': [1, 2, 4],    # Minimum samples required in a leaf node
-                        'max_features': ['auto', 'sqrt', 'log2'],  # Number of features to consider
+                        'max_features': ['sqrt', 'log2', None]  # Number of features to consider
                     },
-                        "Gradient Boosting": {
+                    "Gradient Boosting": {
                         'n_estimators': [100, 200, 300],  # Number of boosting stages (trees)
                         'learning_rate': [0.01, 0.1, 0.2],  # Step size shrinkage to prevent overfitting
                         'max_depth': [3, 4, 5],  # Maximum depth of each tree
                         'min_samples_split': [2, 5, 10],  # Minimum samples required to split a node
                         'min_samples_leaf': [1, 2, 4],  # Minimum samples required in a leaf node
-                        'max_features': ['auto', 'sqrt', 'log2'],  # Number of features to consider
+                        'max_features': ['sqrt', 'log2', None]  # Number of features to consider
                     },
                     
                 }
@@ -77,6 +71,28 @@ class modelTrainingClass:
         except Exception as e:
             raise CustomException(e, sys)
 
+    def mlFlowParametersAndModelsForTraining(self):
+        try:
+            models = {
+                "Random Forest"         : RandomForestRegressor(),
+
+                }
+
+            params = {
+                    "Random Forest": {
+                        'n_estimators': [10, 50, 100, 200],  # Number of trees in the forest
+                        'max_depth': [None, 10, 20, 30],   # Maximum depth of each tree
+                        'min_samples_split': [2, 5, 10],  # Minimum samples required to split a node
+                        'min_samples_leaf': [1, 2, 4],    # Minimum samples required in a leaf node
+                        'max_features': ['sqrt', 'log2', None]  # Number of features to consider
+                    },
+
+                    
+                }
+
+            return models , params
+        except Exception as e:
+            raise CustomException(e, sys)
 
     def modelTraingMethod(self,model_report,models):
         try:
@@ -120,79 +136,63 @@ class modelTrainingClass:
             k = 0
             print(j)
 
-            with mlflow.start_run():
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=UserWarning)  # Ignore the UserWarning
 
-                with warnings.catch_warnings():
-                    warnings.filterwarnings("ignore", category=UserWarning)  # Ignore the UserWarning
+                for i in range(len(list(models))):
+                    print(j)
+                    j = j + 1
+                    model = list(models.values())[i]
 
-                    for i in range(len(list(models))):
-                        print(j)
+                    print(list(models.keys())[i])
 
-                        j = j + 1
-                        model = list(models.values())[i]
-                        print(list(models.keys())[i])
-                        para = param[list(models.keys())[i]]
-                        print(para)
-                        searchCvObj = RandomizedSearchCV(model, para)
-                        searchCvObj.fit(X_train, y_train)
-                        model.set_params(**searchCvObj.best_params_)
-                        model.fit(X_train, y_train)
-                        
-                        
-                        y_train_pred = model.predict(X_train)
-                        y_test_pred = model.predict(X_test)
-                        R2train_model_score = r2_score(y_train, y_train_pred)
-                        R2test_model_score = r2_score(y_test, y_test_pred)
+                    para = param[list(models.keys())[i]]
+                    print(para)
 
-                        aR2 = 1 - (1 - R2test_model_score) * (len(y_test) - 1) / (len(y_test) - X_test.shape[1] - 1)
+                    gs = RandomizedSearchCV(model, para)
+                    gs.fit(X_train, y_train)
 
-                        MSE = metrics.mean_squared_error(y_test, y_test_pred)
-                        MAE = metrics.mean_absolute_error(y_test, y_test_pred)
-                        RMSE = np.sqrt(metrics.mean_squared_error(y_test, y_test_pred))
+                    model.set_params(**gs.best_params_)
 
-                        ar2Score[list(models.keys())[i]] = aR2
-                        modelName = list(models.keys())[i]
+                    model.fit(X_train, y_train)
 
-                        mlflow.log_metric("RMSE", RMSE)
-                        mlflow.log_metric("R2test_model_score", R2test_model_score)
-                        mlflow.log_metric("MAE", MAE)
+                    y_train_pred = model.predict(X_train)
 
-                        modelScore['modelName'].append(modelName)
-                        modelScore['R2core'].append(R2test_model_score)
-                        modelScore['aR2'].append(aR2)
-                        modelScore['MSE'].append(MSE)
-                        modelScore['MAE'].append(MAE)
-                        modelScore['RMSE'].append(RMSE)
-                        k = k+1
+                    y_test_pred = model.predict(X_test)
 
-                        # If you keep the same on AWS
-                        remote_server_uri = "https://dagshub.com/SHIVRAJSHINDE/mlOpsDvcAirline01.mlflow"
-                        mlflow.set_tracking_uri(remote_server_uri)
-                        
-                        # If you keep the same on AWS
-                        #remote_server_uri = "http://ec2-16-171-1-148.eu-north-1.compute.amazonaws.com:5000/"
-                        #mlflow.set_tracking_uri(remote_server_uri)
+                    R2train_model_score = r2_score(y_train, y_train_pred)
+                    R2test_model_score = r2_score(y_test, y_test_pred)
 
-                        tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
-                        # Model registry does not work with file store
-                        if tracking_url_type_store != "file":
+                    aR2 = 1 - (1 - R2test_model_score) * (len(y_test) - 1) / (len(y_test) - X_test.shape[1] - 1)
 
-                            # Register the model
-                            # There are other ways to use the Model Registry, which depends on the use case,
-                            # please refer to the doc for more information:
-                            # https://mlflow.org/docs/latest/model-registry.html#api-workflow
-                            mlflow.sklearn.log_model(i, "model", registered_model_name="ElasticnetWineModel")
-                        else:
-                            mlflow.sklearn.log_model(i, "model")
+                    MSE = metrics.mean_squared_error(y_test, y_test_pred)
+                    MAE = metrics.mean_absolute_error(y_test, y_test_pred)
+                    RMSE = np.sqrt(metrics.mean_squared_error(y_test, y_test_pred))
+
+                    ar2Score[list(models.keys())[i]] = aR2
+
+                    modelName = list(models.keys())[i]
+
+                    modelScore['modelName'].append(modelName)
+                    modelScore['R2core'].append(R2test_model_score)
+                    modelScore['aR2'].append(aR2)
+                    modelScore['MSE'].append(MSE)
+                    modelScore['MAE'].append(MAE)
+                    modelScore['RMSE'].append(RMSE)
+                    k = k+1
 
 
-                print(pd.DataFrame(modelScore))
-                #print(modelScore)
-                print(ar2Score)
+            print(pd.DataFrame(modelScore))
+            #print(modelScore)
+            print(ar2Score)
 
-                return ar2Score
+            return ar2Score
 
         except Exception as e:
             raise CustomException(e, sys)
+
+
+
+
 
 

@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/0/bb5e06a325314790b9bbe54c9ce45b1e/artifacts
+end_time: 1707915742800
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: bb5e06a325314790b9bbe54c9ce45b1e
+run_name: bright-ape-954
+run_uuid: bb5e06a325314790b9bbe54c9ce45b1e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1707915740048
+status: 4
+tags: []
+user_id: shind

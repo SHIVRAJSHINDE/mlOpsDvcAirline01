@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/0/5a32d4ead0254bb280245e12d9f056bf/artifacts
+end_time: 1707909850756
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 5a32d4ead0254bb280245e12d9f056bf
+run_name: useful-colt-49
+run_uuid: 5a32d4ead0254bb280245e12d9f056bf
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1707909848301
+status: 4
+tags: []
+user_id: shind
